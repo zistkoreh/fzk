@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>پنل کاربری</title>
+    <link rel="icon" type="image/jpeg" href="fzk.jpg" />
+    <link
+      href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="dashboard-container" id="dashboardSection">
+      <aside class="sidebar">
+        <div class="logo">زیست کره</div>
+        <div class="user-info">
+          <p>خوش آمدید، <span id="usernameDisplay"></span></p>
+        </div>
+        <nav>
+          <ul class="nav-menu">
+            <li class="nav-item" id="dashboardBtn">📊 آمار</li>
+            <li class="nav-item" id="addTaskBtn">➕ اضافه کردن کار جدید</li>
+            <li class="nav-item" id="viewTasksBtn">📋 مشاهده وضعیت کار ها</li>
+          </ul>
+        </nav>
+        <button class="logout-btn" id="logoutBtn" style="visibility: hidden">
+          🚪 خروج از سیستم
+        </button>
+      </aside>
+
+      <main class="main-content">
+        <div class="welcome-box" id="welcomeBox">
+          <h1>📊 وضعیت کاربر</h1>
+          <p>
+            تعداد کار های انجام شده و انجام نشده در اینجا قابل مشاهده خواهد بود
+          </p>
+        </div>
+
+        <div class="task-form" id="taskForm">
+          <h2 id="tempHeaderTask">📝 افزودن کار جدید</h2>
+          <form id="taskSubmissionForm">
+            <div class="form-group">
+              <label for="taskTitle">عنوان کار *</label>
+              <input type="text" id="taskTitle" required />
+            </div>
+            <div class="form-group">
+              <label for="taskStatus">وضعیت *</label>
+              <select id="taskStatus" required>
+                <option value="">انتخاب کنید</option>
+                <option value="انجام نشده">انجام نشده</option>
+                <option value="انجام شده">انجام شده</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="taskDate">تاریخ انجام *</label>
+              <input type="date" id="taskDate" required />
+            </div>
+            <div class="form-group">
+              <label for="taskDescription">توضیحات</label>
+              <textarea id="taskDescription"></textarea>
+            </div>
+            <button type="submit" class="btn-primary">➕ اضاضه کردن کار</button>
+            <button
+              type="button"
+              id="cancelEditBtn"
+              style="display: none"
+              class="btn-secondary"
+            >
+              لغو
+            </button>
+          </form>
+        </div>
+
+        <div class="task-list" id="taskList">
+          <div class="task-header">
+            <h2>📋 لیست کار ها</h2>
+          </div>
+          <div id="tasksContainer"></div>
+          <div
+            class="export-container"
+            style="margin-top: 20px; text-align: center"
+          >
+            <button id="exportExcelBtn" class="btn-primary">خروجی اکسل</button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
