@@ -1,4 +1,5 @@
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+console.log(tasks);
 
 const dashboardSection = document.getElementById("dashboardSection");
 const usernameDisplay = document.getElementById("usernameDisplay");
@@ -23,6 +24,13 @@ let editingIndex = -1;
 
 document.addEventListener("DOMContentLoaded", function () {
   showDashboard();
+
+  setInterval(function () {
+    const undoneCount = countUndoneTasks();
+    if (undoneCount > 0) {
+      sendNotification(`شما ${undoneCount} کار انجام نشده دارید.`);
+    }
+  }, 3 * 60 * 60 * 1000);
 });
 
 function showDashboard() {
@@ -30,7 +38,27 @@ function showDashboard() {
   usernameDisplay.textContent = `${localStorage.getItem(
     "zistFirstName"
   )} ${localStorage.getItem("zistLastName")}`;
+
+  const completed = tasks.filter((task) => task.status === "انجام شده").length;
+  const unCompleted = tasks.length - completed;
+  const progressPercentage =
+    tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0;
+
+  document.getElementById("completedTasks").textContent = completed;
+  document.getElementById("unCompletedTasks").textContent = unCompleted;
+  document.querySelector(
+    ".progress-fill"
+  ).style.width = `${progressPercentage}%`;
+  document.querySelector(
+    ".progress-text"
+  ).textContent = `پیشرفت کلی: ${progressPercentage}%`;
+
   refreshTaskList();
+
+  // Request notification permission
+  if ("Notification" in window && Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
 }
 
 addTaskBtn.addEventListener("click", () => {
@@ -38,11 +66,15 @@ addTaskBtn.addEventListener("click", () => {
   taskForm.style.display = "block";
   taskList.style.display = "none";
   taskSubmissionForm.reset();
+
+  if (Notification.permission === "default") {
+    Notification.requestPermission();
+  }
   isEditing = false;
   editingIndex = -1;
   document.querySelector(
     '#taskSubmissionForm button[type="submit"]'
-  ).textContent = "➕ اضافه کردن وظیفه";
+  ).textContent = " اضافه کردن ";
   cancelEditBtn.style.display = "none";
   tempHeaderTask.textContent = "افزودن کار جدید";
 });
@@ -58,6 +90,23 @@ dashboardBtn.addEventListener("click", () => {
   welcomeBox.style.display = "block";
   taskForm.style.display = "none";
   taskList.style.display = "none";
+
+  const completed = tasks.filter((task) => task.status === "انجام شده").length;
+  const unCompleted = tasks.length - completed;
+  const progressPercentage =
+    tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0;
+
+  // Update DOM elements
+  document.getElementById("completedTasks").textContent = completed;
+  document.getElementById("unCompletedTasks").textContent = unCompleted;
+  document.querySelector(
+    ".progress-fill"
+  ).style.width = `${progressPercentage}%`;
+  document.querySelector(
+    ".progress-text"
+  ).textContent = `پیشرفت کلی: ${progressPercentage}%`;
+
+  // refreshTaskList();
 });
 
 function refreshTaskList() {
@@ -106,7 +155,7 @@ function refreshTaskList() {
 }
 
 function deleteTask(index) {
-  if (confirm("آیا از حذف این وظیفه مطمئنید؟")) {
+  if (confirm("آیا از حذف این کار مطمئنید؟")) {
     tasks.splice(index, 1);
     localStorage.setItem("tasks", JSON.stringify(tasks));
     refreshTaskList();
@@ -126,7 +175,7 @@ function editTask(index) {
   taskList.style.display = "none";
   document.querySelector(
     '#taskSubmissionForm button[type="submit"]'
-  ).textContent = "🔄 اعمال تغییرات";
+  ).textContent = " اعمال تغییرات";
   cancelEditBtn.style.display = "block";
 
   tempHeaderTask.textContent = "ویرایش";
@@ -148,7 +197,7 @@ taskSubmissionForm.addEventListener("submit", function (e) {
     editingIndex = -1;
     document.querySelector(
       '#taskSubmissionForm button[type="submit"]'
-    ).textContent = "➕ اضافه کردن کار";
+    ).textContent = " اضافه کردن کار";
     cancelEditBtn.style.display = "none";
     taskForm.style.display = "none";
     taskList.style.display = "block";
@@ -192,13 +241,13 @@ exportExcelBtn.addEventListener("click", exportTasksToExcel);
 
 function exportTasksToExcel() {
   if (tasks.length === 0) {
-    alert("هیچ وظیفه‌ای برای خروجی اکسل موجود نیست!");
+    alert("هیچ کار‌ای برای خروجی اکسل موجود نیست!");
     return;
   }
   const xlsData = tasks.map((task) => {
     return {
-      "عنوان وظیفه": task.title,
-      اولویت: task.status,
+      "عنوان کار": task.title,
+      وضعیت: task.status,
       "تاریخ انجام": new Date(task.date).toLocaleDateString("fa-IR"),
       توضیحات: task.description || "ندارد",
       "تاریخ ثبت": new Date(task.createdAt).toLocaleString("fa-IR"),
@@ -208,4 +257,24 @@ function exportTasksToExcel() {
   var ws = XLSX.utils.json_to_sheet(xlsData);
   XLSX.utils.book_append_sheet(wb, ws, "وظایف");
   XLSX.writeFile(wb, "tasks.xlsx");
+}
+
+function countUndoneTasks() {
+  return tasks.filter((task) => task.status !== "انجام شده").length;
+}
+
+function sendNotification(message) {
+  if ("Notification" in window) {
+    if (Notification.permission === "granted") {
+      new Notification("یادآوری وظایف", { body: message });
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          new Notification("یادآوری وظایف", { body: message });
+        }
+      });
+    }
+  } else {
+    console.log("This browser does not support desktop notifications");
+  }
 }
