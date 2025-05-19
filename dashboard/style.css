@@ -169,6 +169,9 @@ button:hover {
   display: flex;
   align-items: center;
   gap: 10px;
+
+  font-size: 17px;
+  font-weight: 600;
 }
 
 .nav-item:hover {
