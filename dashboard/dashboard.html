@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -22,8 +22,8 @@
         <nav>
           <ul class="nav-menu">
             <li class="nav-item" id="dashboardBtn">📊 آمار</li>
+            <li class="nav-item" id="viewTasksBtn">📋 کار های ثبت شده</li>
             <li class="nav-item" id="addTaskBtn">➕ اضافه کردن کار جدید</li>
-            <li class="nav-item" id="viewTasksBtn">📋 مشاهده وضعیت کار ها</li>
           </ul>
         </nav>
         <button class="logout-btn" id="logoutBtn" style="visibility: hidden">
@@ -32,11 +32,30 @@
       </aside>
 
       <main class="main-content">
-        <div class="welcome-box" id="welcomeBox">
-          <h1>📊 وضعیت کاربر</h1>
-          <p>
-            تعداد کار های انجام شده و انجام نشده در اینجا قابل مشاهده خواهد بود
-          </p>
+        <div class="tasks-status-box" id="welcomeBox">
+          <h1 class="status-title">📊 آمار عملکرد</h1>
+          <div class="stats-container">
+            <div class="stat-card success">
+              <div class="stat-icon">✅</div>
+              <div class="stat-content">
+                <span class="stat-number" id="completedTasks">10</span>
+                <span class="stat-label">کارهای انجام شده</span>
+              </div>
+            </div>
+            <div class="stat-card danger">
+              <div class="stat-icon">⏳</div>
+              <div class="stat-content">
+                <span class="stat-number" id="unCompletedTasks">10</span>
+                <span class="stat-label">کارهای باقیمانده</span>
+              </div>
+            </div>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill success" style="width: 50%"></div>
+            </div>
+            <div class="progress-text">پیشرفت کلی: 50%</div>
+          </div>
         </div>
 
         <div class="task-form" id="taskForm">
