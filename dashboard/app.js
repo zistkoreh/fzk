@@ -18,6 +18,7 @@ const taskDescription = document.getElementById("taskDescription");
 const cancelEditBtn = document.getElementById("cancelEditBtn");
 
 const tempHeaderTask = document.getElementById("tempHeaderTask");
+const dataPickerField = document.getElementById("dataPickerField");
 
 let isEditing = false;
 let editingIndex = -1;
@@ -128,9 +129,8 @@ function refreshTaskList() {
  <div class="priority-badge priority-${task.status.replace(" ", "-")}">
  وضعیت: ${task.status}
  </div>
- <div class="task-date">📅 ${new Date(task.date).toLocaleDateString(
-   "fa-IR"
- )}</div>
+ <div class="task-date">📅 ${task.date}
+ </div>
  </div>
  <div class="task-body">
  <h3>${task.title}</h3>
@@ -168,7 +168,10 @@ function editTask(index) {
   const task = tasks[index];
   taskTitle.value = task.title;
   taskStatus.value = task.status;
-  taskDate.value = task.date;
+
+  // taskDate.value = task.date;
+  dataPickerField.value = task.date;
+
   taskDescription.value = task.description || "";
   welcomeBox.style.display = "none";
   taskForm.style.display = "block";
@@ -187,7 +190,7 @@ taskSubmissionForm.addEventListener("submit", function (e) {
     tasks[editingIndex] = {
       title: taskTitle.value,
       status: taskStatus.value,
-      date: taskDate.value,
+      date: dataPickerField.value,
       description: taskDescription.value,
       createdAt: tasks[editingIndex].createdAt,
     };
@@ -209,7 +212,7 @@ taskSubmissionForm.addEventListener("submit", function (e) {
     const newTask = {
       title: taskTitle.value,
       status: taskStatus.value,
-      date: taskDate.value,
+      date: dataPickerField.value,
       description: taskDescription.value,
       createdAt: new Date().toISOString(),
     };
@@ -235,6 +238,10 @@ cancelEditBtn.addEventListener("click", function () {
   taskList.style.display = "block";
   refreshTaskList();
 });
+
+// dataPickerField.addEventListener("click", function () {
+//   console.log(this.value);
+// });
 
 const exportExcelBtn = document.getElementById("exportExcelBtn");
 exportExcelBtn.addEventListener("click", exportTasksToExcel);
