@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (undoneCount > 0) {
       sendNotification(`شما ${undoneCount} کار انجام نشده دارید.`);
     }
-  }, 3 * 60 * 60 * 1000);
+  }, 10000);
 });
 
 function showDashboard() {
